@@ -26,7 +26,7 @@ html.setHTML """
 	}
 	
 	#mediaSize a {
-		background:url(http://mysterious-forest-7947.herokuapp.com/viscom-engine/viscom/components/tooltip/assets/img/icon_marker.png); 
+		background:url(../viscom-engine/viscom/components/tooltip/assets/img/icon_marker.png); 
 		width:12px;
 		height:16px;
 		margin-left:-6px;
