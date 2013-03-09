@@ -1,0 +1,223 @@
+scene.addChild browser=newc Browser, skin: 'browser'
+
+scene.addChild html = newc HTML
+
+html.setHTML """
+<style>
+#main-wrapper { position:relative;}
+.browser {
+  	  zoom:0.5;
+		  -moz-transform: scale(0.5);
+		  -moz-transform-origin: 0 0
+}
+		  
+#mediaMain {
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:100%;
+}
+	#mediaSize { 
+		position:absolute; 
+		z-index:1;
+		left:0;
+		bottom:0;
+		border-bottom:1px dashed #999;
+	}
+	
+	#mediaSize a {
+		background:url(http://mysterious-forest-7947.herokuapp.com/viscom-engine/viscom/components/tooltip/assets/img/icon_marker.png); 
+		width:12px;
+		height:16px;
+		margin-left:-6px;
+		position:absolute;
+		z-index:30;
+		bottom:0;
+		cursor:pointer;
+	}
+	#mediaSize a span {
+			position:absolute;
+			background:#699da3;
+			border-radius:5px;
+			padding:5px;
+			font-size:11px;
+			color:#FFF;
+			z-index:10;
+			bottom:25px;
+			text-align:center;
+			left:-20px;
+			width:40px;
+			display:none;
+	}
+	#mediaSize a:hover span {
+		display:block
+	}
+	#mediaSize a span:before {
+			content:'';
+			position:absolute;
+			left:50%;
+			top:100%;
+			margin-left:-7px;
+			width: 0; 
+			height: 0; 
+			border-left: 8px solid transparent;
+			border-right: 8px solid transparent;
+			border-top: 8px solid #699da3;
+	}
+		#mediaRange {
+			width:100%;
+			left:0;
+			bottom:0;
+			position:absolute;
+			z-index:1;
+			border-top:2px solid;
+			border-left:1px dashed;
+			border-right:1px dashed;
+			border-color: #666;
+			;
+		}
+		#mediaRange > span {
+			position:absolute;
+			left:50%;
+			top:-10px;
+			height:20px;
+			line-height:20px;
+			background:#FFF;
+			width:60px;
+			margin-left:-30px;
+			text-align:center;
+		}
+		#mediaRange > div {
+			position:absolute;
+			bottom:0;
+			border:solid;
+			border-width:2px 1px 0 1px;
+			border-left:1px dashed;
+			border-right:1px dashed;
+			min-width:1px !important;
+			cursor: help
+		}
+		#mediaRange > div span {
+			position:absolute;
+			background:#699da3;
+			border-radius:5px 5px 5px 0;
+			padding:10px 0;
+			font-size:11px;
+			color:#FFF;
+			z-index:10;
+			top:0;
+			margin-top:-50px;
+			display:block;
+			left:0;
+			min-width:100%;
+			display:none;
+		}
+		#mediaRange > div span em {
+			padding:0 10px;
+			white-space:nowrap
+		}
+		#mediaRange > div span:before {
+			content:'';
+			position:absolute;
+			left:0;
+			top:100%;
+			width: 0; 
+			height: 0; 
+			border-right: 8px solid transparent;
+			border-top: 8px solid #699da3;
+		}
+		#mediaRange > div:hover {
+			background:rgba(105,157,163,.8) !important;
+		}
+		#mediaRange > div:hover span {
+			display:block;
+		}
+</style>
+
+        <div id="mediaMain">
+            <div id="mediaRange">W to miejsce załdują się zakresy</div>
+            <div id="mediaSize">
+                <a href="#" class="button" style="left:320px"><span>320px</span></a>
+                <a href="#" class="button" style="left:768px"><span>768px</span></a>
+                <a href="#" class="button" style="left:1024px"><span>1024px</span></a>
+                <a href="#" class="button" style="left:1220px"><span>1220px</span></a>
+            </div>
+        </div>
+"""
+
+director.seq ->
+							browser.animate width: 1024, height: 600
+							browser.$el.css 
+								top: 150
+								position:'relative'
+						,->
+							p = browser.$el.position()
+							p.position= 'absolute'
+							p.width = browser.$el.find("iframe").width()
+							html.$el.css p
+							
+							arrayMedia = []
+							arrayMedia[0] = []
+							arrayMedia[0][0] = []
+							arrayMedia[0][0]["min"] = 100
+							arrayMedia[0][0]["max"] = 150
+							arrayMedia[0][0]["rgb"] = "255,0,0"
+							arrayMedia[0][1] = []
+							arrayMedia[0][1]["min"] = 400
+							arrayMedia[0][1]["max"] = 1024
+							arrayMedia[0][1]["rgb"] = "255,0,0"
+							arrayMedia[1] = []
+							arrayMedia[1][0] = []
+							arrayMedia[1][0]["min"] = 500
+							arrayMedia[1][0]["rgb"] = "0,255,0"
+							arrayMedia[2] = []
+							arrayMedia[2][0] = []
+							arrayMedia[2][0]["max"] = 700
+							arrayMedia[2][0]["rgb"] = "0,0,255"
+							arrayMedia[3] = []
+							arrayMedia[3][0] = []
+							arrayMedia[3][0]["min"] = 200
+							arrayMedia[3][0]["max"] = 200
+							arrayMedia[3][0]["rgb"] = "255,255,0"
+							zoom = .5
+							maxWidth = 2000
+							generateMedia arrayMedia, maxWidth, zoom
+
+generateMedia = (arrayMedia, maxWidth, zoom) ->
+	browserWidth = browser.$el.find(".browser-inside").width()
+	mediaHeight = 20
+	heightStart = (mediaHeight * arrayMedia.length) + 30
+	html.$el.find("#mediaMain").css
+		width: browserWidth * zoom
+		bottom: -26 * zoom
+	html.$el.find("#mediaSize").width maxWidth * zoom # ustawiam szerokość kontenera z przyciskami
+	html.$el.find("#mediaRange").html "<span>" + browserWidth + "px" # wstawiam aktualną szeokość przeglądarki
+	html.$el.find("#mediaRange").height heightStart #  ustawiam wysokość kontenera z wszystkiemi zakresamifor x of arrayMedia
+	$.each arrayMedia, (index, value) ->
+		heightStart -= mediaHeight #wyoskość aktualnego zakresu
+		$.each arrayMedia[index], (index, value) ->
+			hue = value["rgb"]
+			borderColor = "rgb(" + hue + ")"
+			backgroundColor = "rgba(" + hue + ",.5)"
+			if value["min"] and value["max"]
+				mediaStart = value["min"]
+				mediaEnd = value["max"]
+				mediaWidth = mediaEnd - mediaStart
+				if value["min"] is value["max"]
+						popUp = "(width: " + mediaStart + "px)"
+				else
+						popUp = "(min-width: " + mediaStart + "px) and (max-width: " + mediaEnd + "px)"
+			else if value["min"] and not value["max"]
+					mediaStart = value["min"]
+					mediaWidth = maxWidth - mediaStart
+					popUp = "(min-width: " + mediaStart + "px)"
+			else if not value["min"] and value["max"]
+					mediaStart = 0
+					mediaWidth = value["max"]
+					popUp = "(max-width: " + mediaWidth + "px)"
+  		htmlMedia = "<div style=\"left:" + mediaStart * zoom + "px; width:" + mediaWidth * zoom + "px; height:" + heightStart + "px; background-color:" + backgroundColor + "; border-color:" + borderColor + "\"><span><em>" + popUp + ""
+			html.$el.find("#mediaRange").append htmlMedia
+	html.$el.find("#mediaSize a").each ->
+		$this = $(this)
+		leftPosition = $this.position().left
+		$this.css "left", leftPosition * zoom
