@@ -192,7 +192,7 @@ generateMedia = (arrayMedia, maxWidth, zoom) ->
 		bottom: -26 * zoom
 	html.$el.find("#mediaSize").width maxWidth * zoom # ustawiam szerokość kontenera z przyciskami
 	html.$el.find("#mediaRange").html "<span>" + browserWidth + "px" # wstawiam aktualną szeokość przeglądarki
-	html.$el.find("#mediaRange").height heightStart #  ustawiam wysokość kontenera z wszystkiemi zakresamifor x of arrayMedia
+	html.$el.find("#mediaRange").height heightStart #  ustawiam wysokość kontenera z wszystkiemi zakresami
 	$.each arrayMedia, (index, value) ->
 		heightStart -= mediaHeight #wyoskość aktualnego zakresu
 		$.each arrayMedia[index], (index, value) ->
